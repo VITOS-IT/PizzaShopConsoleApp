@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\kanini_courses\\Participants\\Day17_html\\PizzaShop\\PizzaShop.csproj": {}
+    "D:\\kanini_courses\\Participants\\homeWork\\Day17\\PizzaShop\\PizzaShop.csproj": {}
   },
   "projects": {
-    "D:\\kanini_courses\\Participants\\Day17_html\\PizzaShop\\PizzaShop.csproj": {
+    "D:\\kanini_courses\\Participants\\homeWork\\Day17\\PizzaShop\\PizzaShop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\kanini_courses\\Participants\\Day17_html\\PizzaShop\\PizzaShop.csproj",
+        "projectUniqueName": "D:\\kanini_courses\\Participants\\homeWork\\Day17\\PizzaShop\\PizzaShop.csproj",
         "projectName": "PizzaShop",
-        "projectPath": "D:\\kanini_courses\\Participants\\Day17_html\\PizzaShop\\PizzaShop.csproj",
+        "projectPath": "D:\\kanini_courses\\Participants\\homeWork\\Day17\\PizzaShop\\PizzaShop.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\kanini_courses\\Participants\\Day17_html\\PizzaShop\\obj\\",
+        "outputPath": "D:\\kanini_courses\\Participants\\homeWork\\Day17\\PizzaShop\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

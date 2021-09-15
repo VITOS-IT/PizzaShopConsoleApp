@@ -7,7 +7,7 @@ namespace PizzaShop
     class Program
     {
         PizzaShopContext context;
-        User activeUser=new();
+        User activeUser = new();
         Order order;
         OrdersDetail ordersDetail;
         int totalPrice = 0;
@@ -99,7 +99,8 @@ namespace PizzaShop
                 }
             } while (activeUser.UserEmail == null);
             order = new Order() { UserId = activeUser.UserEmail };
-             context.Orders.Add(order);
+            context.Orders.Add(order);
+            context.SaveChanges();
         }
 
 
@@ -109,9 +110,9 @@ namespace PizzaShop
             Console.WriteLine("The following are the pizza that are available for ordering");
             List<Pizza> pizzaList = context.Pizzas.ToList();
             Console.WriteLine($"Number    Name  	Price      Type");
-            foreach(var item in pizzaList)
+            foreach (var item in pizzaList)
             {
-                Console.WriteLine($"{item.PizzaNumber}         {item.Name}      {item.Prise}        {item.Type}");
+                Console.WriteLine($"{item.PizzaNumber}         {item.Name}      ${item.Prise}        {item.Type}");
             }
             Console.WriteLine("Enter the Pizza of your choice");
             pNumber = GetIntNumber();
@@ -120,9 +121,10 @@ namespace PizzaShop
                 Pizza pizza = context.Pizzas.Where(e => e.PizzaNumber == pNumber).FirstOrDefault();
                 Console.WriteLine($"You have selected {pizza.Name} for	${pizza.Prise}");
                 totalPrice += (int)pizza.Prise;
-                ordersDetail = new() {PizzaNumber = pizza.PizzaNumber };
+                ordersDetail = new() { PizzaNumber = pizza.PizzaNumber, OId = order.OId };
                 context.OrdersDetails.Add(ordersDetail);
                 context.SaveChanges();
+                Console.WriteLine("Total $" + totalPrice);
             }
             else
             {
@@ -178,15 +180,83 @@ namespace PizzaShop
                 Console.WriteLine("Do you want to select another pizza for this order?y/n");
                 pChoise = Console.ReadLine().ToLower();
             } while (pChoise == "y");
+            order.Totall = totalPrice;
+            context.Orders.Update(order);
+            context.SaveChanges();
+        }
+
+        void FinalOutput()
+        {
+            List<Toping> topingsList;
+            Console.WriteLine("Your order summary");
+            List<OrdersDetail> finalOrdDtail = context.OrdersDetails.Where(e => e.OId == order.OId).ToList();
+            List<Pizza> pList = new();
+
+            for (int i = 0; i < finalOrdDtail.Count; i++)
+            {
+                Pizza pizza = (context.Pizzas.Where(e => e.PizzaNumber == finalOrdDtail[i].PizzaNumber).FirstOrDefault());
+                List<OrderItemDetail> oad = context.OrderItemDetails.Where(e => e.ItemNumber == finalOrdDtail[i].ItemNumber).ToList();
+                List<Toping> tList = new();
+                Console.WriteLine("Pizza " + (i + 1));
+                Console.WriteLine($"{i + 1}    {pizza.Name}   ${pizza.Prise}    {pizza.Type}");
+                foreach (var details in oad)
+                {
+                    tList.Add(context.Topings.Where(e => e.ToppingNumber == details.ToppingNumber).FirstOrDefault());
+                }
+                Console.WriteLine("Toppings");
+                if (tList.Count != 0)
+                {
+                    for (int j = 0; j < tList.Count; j++)
+                    {
+                        Console.WriteLine($"{j + 1}    {tList[j].Name}   ${tList[j].Prise}");
+                    }
+                }else
+                    Console.WriteLine("Nothing");
+            }
+            
+
+        }
+        void PayDeliveryOutput()
+        {
+            int delivery = 0;
+            string confirm = "";
+            if (totalPrice < 25)
+            {
+                totalPrice += 5;
+                delivery = 5;
+                order.Totall = totalPrice;
+                context.Orders.Update(order);
+                context.SaveChanges();
+            }
+            Console.WriteLine($"Total price - ${totalPrice}");
+            Console.WriteLine($"Delivery cost - ${delivery}");
+            Console.WriteLine("Note- delivery cost of $5 will be added for order less than $25");
+            Console.WriteLine("Please confirm your order y/n?");
+            confirm = Console.ReadLine().ToLower();
+            if(confirm == "y")
+            {
+                Console.WriteLine("The order will be delivered to address");
+                Console.WriteLine("-----------------");
+                Console.WriteLine($"{activeUser.Address}");
+                Console.WriteLine($"Name: {activeUser.Name}, phone: {activeUser.Phone}");
+                Console.WriteLine("Please pay on delivery");
+                Console.WriteLine("Thank you");
+            }
+            else
+            {
+                Console.WriteLine("Order was canselled. Bye");
+            }
         }
 
         static void Main(string[] args)
         {
             Program program = new();
-           
+
             program.LoginMenu();
             program.PizzaMenu();
-           
+            program.FinalOutput();
+            program.PayDeliveryOutput();
+
         }
 
         public int GetIntNumber()
